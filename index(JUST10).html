@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Just10 - 10 Minute Grocery Delivery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #f9f9f9;
+            color: #1a1a1a;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span:first-child {
+            color: #22a84f;
+        }
+
+        .logo span:last-child {
+            color: #ff8c00;
+        }
+
+        .call-btn {
+            background: white;
+            border: 1px solid #22a84f;
+            color: #22a84f;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .call-btn:hover {
+            background: #f0f8f3;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 180px;
+            background: linear-gradient(135deg, #22a84f 0%, #1a7c3a 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 24px 16px;
+            margin: 12px 16px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            right: -50px;
+            top: -50px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .hero h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            font-size: 14px;
+            opacity: 0.95;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            background: #ff8c00;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            width: fit-content;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Search Section */
+        .search-section {
+            padding: 16px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 36px;
+            border: none;
+            background: white;
+            border-radius: 12px;
+            font-size: 14px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #22a84f;
+            box-shadow: 0 0 0 3px rgba(34, 168, 79, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #999;
+        }
+
+        /* Categories */
+        .categories {
+            padding: 12px 16px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-list {
+            display: flex;
+            gap: 8px;
+            min-width: min-content;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover {
+            border-color: #22a84f;
+        }
+
+        .category-btn.active {
+            background: #22a84f;
+            color: white;
+            border-color: #22a84f;
+        }
+
+        /* Products Grid */
+        .products-section {
+            padding: 16px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-header h3 {
+            font-size: 16px;
+            color: #1a1a1a;
+        }
+
+        .item-count {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 80px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* .product-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            background: #f5f5f5; */
+            .product-image {
+    width: 100%;
+    height: 160px;          /* key fix */
+    object-fit: contain;   /* show full packet */
+    background: #f5f5f5;
+}
+
+        /* } */
+
+        .product-info {
+            padding: 12px;
+        }
+
+        .product-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-unit {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .price-section {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .prices {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .mrp {
+            font-size: 11px;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .price {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #ff8c00;
+            color: white;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .add-btn {
+            padding: 8px 12px;
+            background: white;
+            border: 2px solid #22a84f;
+            color: #22a84f;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .add-btn:hover {
+            background: #f0f8f3;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            background: #22a84f;
+            color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .qty-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            width: 28px;
+            height: 32px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:hover {
+            background: rgba(0,0,0,0.2);
+        }
+
+        .qty-display {
+            flex: 1;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Cart Bar */
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #22a84f;
+            color: white;
+            padding: 12px 16px;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            z-index: 50;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+        }
+
+        .cart-bar.show {
+            display: flex;
+        }
+
+        .cart-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .cart-items-count {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .cart-total {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .view-cart-btn {
+            background: white;
+            color: #22a84f;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Cart Drawer */
+        .cart-drawer {
+            position: fixed;
+            right: -100%;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            background: white;
+            z-index: 200;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            max-width: 500px;
+        }
+
+        .cart-drawer.open {
+            right: 0;
+        }
+
+        .cart-header {
+            background: white;
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h2 {
+            font-size: 18px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #1a1a1a;
+        }
+
+        .cart-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-cart-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .cart-item-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .cart-item-unit {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .cart-item-price {
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border-radius: 6px;
+            padding: 2px;
+        }
+
+        .cart-item-controls button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 6px;
+            font-size: 12px;
+        }
+
+        .cart-item-controls .qty {
+            font-size: 12px;
+            font-weight: 600;
+            width: 24px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            color: #ff4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+        }
+
+        .bill-details {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .bill-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .bill-row.total {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1a1a1a;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 8px;
+            margin-bottom: 0;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #666;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #22a84f;
+            box-shadow: 0 0 0 3px rgba(34, 168, 79, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .cart-footer {
+            padding: 16px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .whatsapp-btn {
+            width: 100%;
+            padding: 14px;
+            background: #25d366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .whatsapp-btn:hover {
+            background: #1eaf4f;
+        }
+
+        .call-option {
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .call-option a {
+            color: #22a84f;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 150;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        @media (max-width: 640px) {
+            .products-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span>Just</span><span>10</span>
+        </div>
+        <a href="tel:+918630750007" class="call-btn">📞 Call Order</a>
+    </header>
+
+    <div class="hero">
+        <h2>10 Minute Delivery</h2>
+        <p>Grocery & Daily Essentials</p>
+        <div class="badge">⚡ FASTEST DELIVERY</div>
+    </div>
+
+    <div class="search-section">
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search 'namkeen', 'biscuit', 'drinks'...">
+        </div>
+    </div>
+
+    <div class="categories">
+        <div class="category-list" id="categoryList">
+            <button class="category-btn active" data-category="All">All</button>
+        </div>
+    </div>
+
+    <div class="products-section">
+        <div class="section-header">
+            <h3 id="sectionTitle">Popular Items</h3>
+            <span class="item-count"><span id="itemCount">0</span> items</span>
+        </div>
+        <div class="products-grid" id="productsGrid">
+            <div class="loading">Loading products...</div>
+        </div>
+    </div>
+
+    <div class="cart-bar" id="cartBar">
+        <div class="cart-info">
+            <div class="cart-items-count"><span id="cartItemsCount">0</span> items</div>
+            <div class="cart-total">₹<span id="cartTotalPrice">0</span></div>
+        </div>
+        <button class="view-cart-btn" onclick="openCart()">View Cart</button>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <button class="close-btn" onclick="closeCart()">✕</button>
+        </div>
+        <div class="cart-content">
+            <div class="empty-cart" id="emptyCartMessage">
+                <div class="empty-cart-icon">🛒</div>
+                <p>Your cart is empty</p>
+            </div>
+            <div id="cartItemsList"></div>
+            <div id="billDetailsContainer"></div>
+            <div id="deliveryFormContainer"></div>
+        </div>
+        <div class="cart-footer" id="cartFooter"></div>
+    </div>
+
+    <script>
+        const STORE_PHONE = "+918630750007";
+        const HANDLING_FEE = 7;
+const DELIVERY_FEE = 30;
+const FREE_DELIVERY_MIN = 100;
+
+// 🎉 OFFER: false this OUT after 10 Jan
+const DELIVERY_DISABLED = true;
+
+
+let cart = JSON.parse(localStorage.getItem("just10_cart")) || [];
+let selectedCategory = "All";
+
+const products = [
+    {
+        id: 1,
+        name: "Parle Hide & Seek Chocolate Chip Cookies",
+        unit: "100 g",
+        category: "Biscuits",
+        mrp: 30,
+        price: 27,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/ciw/2025/12/18/ccaad1ef-3732-4489-aa24-946704fc6da4_HEX2TREK64_MN_17122025.png"
+    },
+    {
+        id: 101,
+        name:"Parle-G Glucose Biscuit" ,
+        unit: "90 g",
+        category: "Biscuits",
+        mrp: 10,
+        price: 9,
+        image: "data:image/jpeg;base64,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"
+        
+    },
+    {
+        id: 102,
+        name:"Sunfeast Bourbon Dark Fantasy Biscuit" ,
+        unit: "108 g",
+        category: "Biscuits",
+        mrp: 30,
+        price: 24,
+        image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSBhUQEhMWFRITGBkVFRUVFxUTEhcWFxYXFhYSFRcYHSggGBolGxcXIT0tKCkrLi4vGCEzOTMtNygtLisBCgoKDg0OGxAQGzAmHyUuLTUxLy0tLS0tLS0tLS0tLS0tLS0tLS0vLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAOEA4QMBEQACEQEDEQH/xAAcAAEAAQUBAQAAAAAAAAAAAAAAAwIEBQYHAQj/xABTEAABAwIEAQYIBQ8JCQEAAAABAAIDBBEFEiExQQYHEyJRYRQjMnFzgZGzFzRCVJMzNlJiY3KSlKGxwtHS0+EWJCU1RKLD4/EmVXSCo6SywfAV/8QAGgEBAAMBAQEAAAAAAAAAAAAAAAEDBAIFBv/EADMRAQACAAMEBwcFAAMAAAAAAAABAgMRIQQSMUEFEzJRYXGhFSJSgZGxwRQzQtHwI1Ph/9oADAMBAAIRAxEAPwDuKAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDUudGulg5IPkhkdG8PjAcw5XWLwCL+ZV4szFc4a9hpW+NFbRnGv2cSl5c4lGRasl/5iHbecLNGJbvex+kwJ/i2Xklzt1MdW1taRNCdHPDWtlZ2O6tg4dotfv4GyuNOerPj9HUmM8PSfR2zDq+OeibNC8PjeLtc03B/UeFtwtETE6w8a9LUndtGUrlS5EBAQEBAQEBAQEBAQEBAQUveAwuJAAFyToABuSUHIuXnO0WTmDDy020dO5uYX7IgdCO8gg8NNTnvjcqvW2fo7ON7F+n9tFPOBicrw11XJb7QMiPtj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"
+    },
+    {
+        id: 2,
+        name: "Kurkure Masala Munch",
+        unit: "90 g",
+        category: "Namkeen & Snacks",
+        mrp: 20,
+        price: 18,
+        image: "https://m.media-amazon.com/images/I/71LyKlizpuL.jpg"
+    },
+    {
+        id: 201,
+        name: "Crax Aloo Bhujiya Namkeen",
+        unit: "160 g",
+        category: "Namkeen & Snacks",
+        mrp: 50,
+        price: 45,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/NI_CATALOG/IMAGES/CIW/2025/11/27/c77a7f9b-1f7c-452d-b140-13639a9bd65e_22378_1.png"
+    },
+    {
+        id: 202,
+        name: "Bikaji Tana tan Aloo Bhujiya",
+        unit: "200 g",
+        category: "Namkeen & Snacks",
+        mrp: 62,
+        price: 52,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/NI_CATALOG/IMAGES/ciw/2025/12/18/afdcc16c-9e2c-4ea6-9878-fbccee212e6a_4G3R3FAPH2_MN_17122025.png"
+    },
+    {
+        id: 203,
+        name: "Haldiram's nagpur mixture namkeen",
+        unit: "400 g",
+        category: "Namkeen & Snacks",
+        mrp: 82,
+        price: 81,
+        image:"https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/NI_CATALOG/IMAGES/ciw/2025/12/17/6020acb7-ffd3-42c2-88df-83a01e14d1fa_MPJNR3GN6T_MN_17122025.png"
+        // image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/NI_CATALOG/IMAGES/ciw/2025/12/18/afdcc16c-9e2c-4ea6-9878-fbccee212e6a_4G3R3FAPH2_MN_17122025.png"
+    },
+    {
+        id: 204,
+        name: "Craxx double maza roasted chana peanuts namkeen snack",
+        unit: "160 g",
+        category: "Namkeen & Snacks",
+        mrp: 55,
+        price: 50,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/NI_CATALOG/IMAGES/CIW/2025/11/27/46077313-6228-4ff2-b94b-82cca9644353_22380_1.png"
+    },
+    {
+        id: 205,
+        name: "Bingo Mad Angles Achari Masti Masala Crisps",
+        unit: "60 g",
+        category: "Namkeen & Snacks",
+        mrp: 20,
+        price: 18,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_200/NI_CATALOG/IMAGES/ciw/2025/12/18/2c881ad3-4aeb-46fd-a251-10f6014d8638_9NOH4UTXN3_MN_17122025.png"
+    },
+    {
+        id: 206,
+        name: "Bingo Tedhe Medhe",
+        unit: "75 g",
+        category: "Namkeen & Snacks",
+        mrp: 20,
+        price: 14,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/ciw/2025/12/17/2364046b-c5e0-4564-a7c5-6eab14b18e93_OLH94HD20G_MN_17122025.png"
+    },
+    {
+        id: 3,
+        name: "Tata Sampann unpolished Masoor Dal",
+        unit: "500 g",
+        category: "Cereals & Dal",
+        mrp: 83,
+        price: 75,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/ciw/2025/12/16/ca587161-2755-4743-b0fc-8a66f7c94090_FNPLE9IY4K_MN_16122025.png"
+    },
+    {
+        id: 301,
+        name: "Tata Sampann unpolished Moong Dal",
+        unit: "500 g",
+        category: "Cereals & Dal",
+        mrp: 107,
+        price: 100,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/ciw/2025/12/16/cfbe98e8-6409-4bf5-a01e-2e5d6d6880c9_BHFYUE7R97_MN_15122025.png"
+    },
+    {
+        id: 302,
+        name: "Tata Sampann unpolished Toor/Arhar Dal",
+        unit: "500 g",
+        category: "Cereals & Dal",
+        mrp: 101,
+        price: 97,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/ciw/2025/12/16/290757fa-e817-4831-a8cc-eb67c2b35198_20ZC326JM5_MN_15122025.png"
+    },
+    {
+        id: 303,
+        name: "Tata Sampann unpolished Chana Dal",
+        unit: "500 g",
+        category: "Cereals & Dal",
+        mrp: 78,
+        price: 70,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/ciw/2025/12/16/95ec712d-e28d-4984-afe4-03eda21d2f1e_3QBWEU1I6F_MN_15122025.png"
+    },
+    {
+        id: 304,
+        name: "Tata Sampann unpolished Kabuli Chana/White Chana(Big Size)",
+        unit: "500 g",
+        category: "Cereals & Dal",
+        mrp: 114,
+        price: 105,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2025/12/16/93e291c7-b3a9-4684-979c-44278fb94dba_2624_1.png"
+    },
+    {
+        id: 305,
+        name: "Tata Sampann unpolished Green Moong(whole)",
+        unit: "500 g",
+        category: "Cereals & Dal",
+        mrp: 94,
+        price: 82,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2025/1/3/2ff40c42-4487-4694-8084-737fcea07ff6_2621_1.png"
+    },
+    {
+        id: 306,
+        name: "Tata Sampann unpolished Moong Dal Chilka(whole)",
+        unit: "500 g",
+        category: "Cereals & Dal",
+        mrp: 101,
+        price: 97,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2025/1/3/2ff40c42-4487-4694-8084-737fcea07ff6_2621_1.png"
+    },
+    {
+        id: 307,
+        name: "Tata Sampann unpolished Rajma",
+        unit: "500 g",
+        category: "Cereals & Dal",
+        mrp: 116,
+        price: 110,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/ciw/2025/12/16/a6665555-d0cf-436d-b3c2-74da770c07a0_1E9QU5GP8L_MN_15122025.png"
+    },
+{
+        id: 308,
+        name: "Tata Sampann unpolished Kala Chana Whole",
+        unit: "500 g",
+        category: "Cereals & Dal",
+        mrp: 75,
+        price: 70,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/ciw/2025/12/16/0598d495-7b41-45e2-af4e-570ff03f3862_1X6R61F7MQ_MN_16122025.png"
+        },
+        {
+        id: 309,
+        name: "Fortune Rozana-Gold Basmati Rice (Long Grain)",
+        unit: "1 kg",
+        category: "Cereals & Dal",
+        mrp: 130,
+        price: 100,
+        image: "https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=450/da/cms-assets/cms/product/a36272bb-1bfd-49c7-94e2-cc784b9a11c2.png"
+        },
+        {
+        id: 310,
+        name: "India Gate Everyday Pure Basmati Rice (Medium Grain)",
+        unit: "5 kg",
+        category: "Cereals & Dal",
+        mrp: 490,
+        price: 399,
+        image: "https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=450/da/cms-assets/cms/product/94430876-7166-4cfe-8414-bdeb2fe26042.png"
+    },
+        
+        {
+        id: 4,
+        name: "Coca Cola",
+        unit: "2 ltr",
+        category: "Drinks",
+        mrp: 99,
+        price: 90,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/e31d218150f0e6d7aa717d850df5c823"
+    },
+    {
+        id: 401,
+        name: "Maaza Mango Drink",
+        unit: "600 ml",
+        category: "Drinks",
+        mrp: 35,
+        price: 33,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/tutgmvizenb68sertwcg"
+    },
+    {
+        id: 402,
+        name: "Sprite Soft Drink",
+        unit: "750 ml",
+        category: "Drinks",
+        mrp: 40,
+        price: 35,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2025/11/28/9f8e6030-67aa-4687-9472-97667aa77cf0_642.png"
+    },
+    {
+        id: 403,
+        name: "Pepsi Soft Drink Bottle",
+        unit: "750 ml",
+        category: "Drinks",
+        mrp: 40,
+        price: 39,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2025/11/28/cb283815-636b-4921-8c68-f9e00c2f5052_791.png"
+    },
+    {
+        id: 404,
+        name: "Diet Coke Can",
+        unit: "300 ml",
+        category: "Drinks",
+        mrp: 40,
+        price: 38,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2025/11/28/69bafb1f-5675-4c4a-b65b-995d2d9f1f50_210.png"
+    },
+    {
+        id: 405,
+        name: "Mountain dew",
+        unit: "2.25 ltr",
+        category: "Drinks",
+        mrp: 45,
+        price: 40,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2024/11/15/5dba4748-db6f-4a86-acad-a1f4407b514e_65619_1.png"
+    },
+    {
+        id: 406,
+        name: "Amul Kool Kesar flavoured milk",
+        unit: "180 ml",
+        category: "Drinks",
+        mrp: 25,
+        price: 24,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/ciw/2025/12/17/3c49b49e-8188-40b3-8d76-e50c38d3d497_GREV80NFQM_MN_16122025.png"
+    },
+    
+    {
+        id: 5,
+        name: "Dairy Milk",
+        unit: "20.2 g",
+        category: "Chocolates & Sweets",
+        mrp: 20,
+        price: 19,
+        image: "https://m.media-amazon.com/images/I/51Nv9p5YigL._SX679_.jpg"
+    },
+    {
+        id: 501,
+        name: "Kit-Kat 3 Fingers, Choco Coated Wafer Bar",
+        unit: "28.5 g",
+        category: "Chocolates & Sweets",
+        mrp: 25,
+        price: 23,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2024/11/13/c8f6299b-32ff-499a-b9b8-1b3b9cacfc1d_1794_1.png"
+    },
+    {
+        id: 502,
+        name: "Nestley Milky Bar Creamy Milk treat",
+        unit: "22.5 g",
+        category: "Chocolates & Sweets",
+        mrp: 20,
+        price: 18,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2025/11/14/43762874-f305-4f02-903d-a01c256344d9_6069_1.png"
+    },
+    {
+        id: 503,
+        name: "Cadbury Dairy Milk Silk Chocolate bar, 60g",
+        unit: "60 g",
+        category: "Chocolates & Sweets",
+        mrp: 102,
+        price: 93,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2025/12/20/b420431e-b6e0-49fc-b286-cd03a6400866_85416_1.png"
+    },
+    {
+        id: 504,
+        name: "Cadbury Dairy Milk Silk Oreo Chocolate Bar, 58.5g",
+        unit: "58.5 g",
+        category: "Chocolates & Sweets",
+        mrp: 98,
+        price: 95,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2025/12/20/7ac99f68-e98d-4a8d-97d2-a12283d2d5d0_871_1.png"
+    },
+    {
+        id: 505,
+        name: "cadbury 5 Star Chocolate bar ",
+        unit: "35.2 g",
+        category: "Chocolates & Sweets",
+        mrp: 20,
+        price: 19,
+        image: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_544,w_504/NI_CATALOG/IMAGES/CIW/2025/10/28/eae2ffc5-5c6e-4964-b97e-b7de19edf42b_893_1.png"
+    },
+    {
+        id: 506,
+        name: "Kinder Joy (pink)",
+        unit: "20 g",
+        category: "Chocolates & Sweets",
+        mrp: 45,
+        price: 43,
+        image: "https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=450/da/cms-assets/cms/product/39425fe0-8100-4ec3-950f-f2b75995ed09.png"
+    },
+];
+
+const categories = [
+    "All",
+    "Biscuits",
+    "Namkeen & Snacks",
+    "Cereals & Dal",
+    "Chocolates & Sweets",
+    "Drinks"
+];
+
+function renderCategories() {
+    const el = document.getElementById("categoryList");
+    el.innerHTML = categories.map(cat => `
+        <button 
+            class="category-btn ${cat === selectedCategory ? "active" : ""}"
+            onclick="filterByCategory('${cat}')">
+            ${cat}
+        </button>
+    `).join("");
+}
+
+function filterByCategory(cat) {
+    selectedCategory = cat;
+    renderCategories();
+    renderProducts();
+}
+
+document.getElementById("searchInput").addEventListener("input", renderProducts);
+function renderProducts() {
+    const search = document.getElementById("searchInput")
+        .value.toLowerCase();
+
+    const filtered = products.filter(p =>
+        (selectedCategory === "All" || p.category === selectedCategory) &&
+        p.name.toLowerCase().includes(search)
+    );
+
+    document.getElementById("sectionTitle").innerText =
+        selectedCategory === "All" ? "All Items" : selectedCategory;
+
+    document.getElementById("itemCount").innerText = filtered.length;
+
+    const grid = document.getElementById("productsGrid");
+
+    if (!filtered.length) {
+        grid.innerHTML = `<div class="loading">No items found</div>`;
+        return;
+    }
+
+    grid.innerHTML = filtered.map(p => {
+        const cartItem = cart.find(c => c.id === p.id);
+        const qty = cartItem ? cartItem.quantity : 0;
+
+        return  `
+        <div class="product-card">
+            <img src="${p.image}" class="product-image">
+            <div class="product-info">
+                <div class="product-name">${p.name}</div>
+                <div class="product-unit">${p.unit}</div>
+                <div class="price-section">
+                    <div class="prices">
+                        <div class="mrp">₹${p.mrp}</div>
+                        <div class="price">₹${p.price}</div>
+                    </div>
+                     ${
+                        qty === 0
+                        ? `<button class="add-btn" onclick="addToCart(${p.id})">ADD</button>`
+                        : `<div class="qty-controls">
+                            <button class="qty-btn" onclick="updateQuantity(${p.id}, -1)">−</button>
+                            <div class="qty-display">${qty}</div>
+                            <button class="qty-btn" onclick="updateQuantity(${p.id}, 1)">+</button>
+                          </div>`
+                    }
+                </div>
+            </div>
+        </div>`;
+    }).join("");
+}
+
+function addToCart(id) {
+    const item = cart.find(i => i.id === id);
+    if (item) item.quantity++;
+    else cart.push({ ...products.find(p => p.id === id), quantity: 1 });
+    saveCart();
+}
+
+function updateQuantity(id, delta) {
+    const item = cart.find(i => i.id === id);
+    if (!item) return;
+    item.quantity += delta;
+    if (item.quantity <= 0)
+        cart = cart.filter(i => i.id !== id);
+    saveCart();
+}
+
+function saveCart() {
+    localStorage.setItem("just10_cart", JSON.stringify(cart));
+    renderProducts();
+    updateCartUI();
+}
+
+function updateCartUI() {
+    const subtotal = cart.reduce((s,i)=>s+i.price*i.quantity,0);
+    const itemCount = cart.reduce((s,i)=>s+i.quantity,0);
+
+    const handling = itemCount ? HANDLING_FEE : 0;
+    let delivery = 0;
+
+    if (!DELIVERY_DISABLED && subtotal > 0 && subtotal < FREE_DELIVERY_MIN) {
+        delivery = DELIVERY_FEE;
+    }
+
+    const total = subtotal + handling + delivery;
+
+    if (itemCount) {
+        cartBar.classList.add("show");
+        cartItemsCount.innerText = itemCount;
+        cartTotalPrice.innerText = total;
+    } else {
+        cartBar.classList.remove("show");
+    }
+
+    renderCartDrawer(subtotal, handling, delivery, total);
+}
+
+function openCart() {
+    cartDrawer.classList.add("open");
+    overlay.classList.add("show");
+}
+
+function closeCart() {
+    cartDrawer.classList.remove("open");
+    overlay.classList.remove("show");
+}
+function renderCartDrawer(subtotal, handling, delivery, total) {
+    const list = document.getElementById("cartItemsList");
+    const empty = document.getElementById("emptyCartMessage");
+    const billBox = document.getElementById("billDetailsContainer");
+
+    if (!cart.length) {
+        list.innerHTML = "";
+        billBox.innerHTML = "";
+        empty.style.display = "block";
+        document.getElementById("deliveryFormContainer").innerHTML = "";
+        document.getElementById("cartFooter").innerHTML = "";
+        return;
+    }
+
+    empty.style.display = "none";
+
+    list.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <img src="${item.image}" class="cart-item-image">
+            <div class="cart-item-details">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-unit">${item.unit}</div>
+                <div class="cart-item-price">₹${item.price * item.quantity}</div>
+            </div>
+            <div class="cart-item-controls">
+                <button onclick="updateQuantity(${item.id}, -1)">−</button>
+                <span class="qty">${item.quantity}</span>
+                <button onclick="updateQuantity(${item.id}, 1)">+</button>
+            </div>
+        </div>
+    `).join("");
+
+    billBox.innerHTML = `
+        <div class="bill-details">
+            <div class="bill-row">
+                <span>Subtotal</span>
+                <span>₹${subtotal}</span>
+            </div>
+            <div class="bill-row">
+                <span>Handling Fee</span>
+                <span>₹${handling}</span>
+            </div>
+            <div class="bill-row">
+                <span>Delivery Fee</span>
+                <span>${delivery === 0 ? "FREE" : "₹"+delivery}</span>
+            </div>
+            <div class="bill-row total">
+                <span>Total</span>
+                <span>₹${total}</span>
+            </div>
+            <div style="margin-top:8px;font-size:12px;color:#22a84f;">
+                🎉 FREE delivery till 10 January 2026!!! 
+            </div>
+            
+        </div>
+    `;
+ //<div style="margin-top:8px;font-size:12px;color:#22a84f;">
+            //     🎉 Unlock FREE delivery on orders above ₹${FREE_DELIVERY_MIN} 
+            // </div>   //replace it after 10 jan
+    renderCheckoutSection(total);
+}
+function renderCheckoutSection(total) {
+    document.getElementById("deliveryFormContainer").innerHTML = `
+        <div class="form-group">
+            <label>Name</label>
+            <input id="custName" placeholder="Your name">
+        </div>
+        <div class="form-group">
+            <label>Phone</label>
+            <input id="custPhone" placeholder="10-digit mobile">
+        </div>
+        <div class="form-group">
+            <label>Delivery Address</label>
+            <textarea id="custAddress" placeholder="House no, area"></textarea>
+        </div>
+    `;
+    document.getElementById("cartFooter").innerHTML = `
+        <button class="whatsapp-btn" onclick="placeWhatsAppOrder(${total})">
+            📲 Place order on WhatsApp
+        </button>
+        <div class="call-option">
+            or <a href="tel:${STORE_PHONE}">Place order on call</a>
+        </div>
+    `;
+}
+
+
+function placeWhatsAppOrder(total) {
+    const name = custName.value.trim();
+    const phone = custPhone.value.trim();
+    const address = custAddress.value.trim();
+
+    if (!name || !phone || !address) {
+        alert("Please fill all customer details");
+        return;
+    }
+
+    const items = cart.map(i =>
+        `• ${i.name} (${i.unit}) x ${i.quantity} = ₹${i.price * i.quantity}`
+    ).join("\n");
+
+    const msg = `
+🛒 New Order – Just10
+
+Name: ${name}
+Phone: ${phone}
+Address: ${address}
+
+Items:
+${items}
+
+Total Payable: ₹${total}
+`.trim();
+
+    window.open(
+        `https://wa.me/${STORE_PHONE.replace("+","")}?text=${encodeURIComponent(msg)}`,
+        "_blank"
+    );
+}
+renderCategories();
+renderProducts();
+updateCartUI();
+
+
+</script>
+
+</body>
+</html>
